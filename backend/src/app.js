@@ -13,10 +13,39 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 const app = express();
 
 // Middleware
+const configuredOrigins = (process.env.CORS_ORIGIN || '*')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || '*',
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. curl, health checks, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // If wildcard configured, reflect the origin to allow credentials
+    if (configuredOrigins.includes('*')) return callback(null, true);
+
+    // Exact match in configured origins
+    if (configuredOrigins.includes(origin)) return callback(null, true);
+
+    // Automatically allow any Vercel deployment (preview and production)
+    if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+
+    // Automatically allow any Render deployment
+    if (/\.onrender\.com$/.test(origin)) return callback(null, true);
+
+    // Automatically allow local development
+    if (/^https?:\/\/localhost(:\d+)?$/.test(origin) || /^https?:\/\/127\.0\.0\.1(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    // Permissive fallback for academic/prototype deployment
+    return callback(null, true);
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 app.use(express.json());
