@@ -19,7 +19,8 @@ router.get('/', (req, res) => {
     database: {
       status: dbStatus,
       readyState: mongoose.connection.readyState,
-      name: mongoose.connection.name || 'bandwidth_monitor'
+      name: mongoose.connection.name || 'bandwidth_monitor',
+      host: mongoose.connection.host
     },
     version: '1.0.0'
   });
