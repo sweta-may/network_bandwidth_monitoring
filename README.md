@@ -1,3 +1,5 @@
+[FSWD-project-report.docx](https://github.com/user-attachments/files/35206555/FSWD-project-report.docx)
+
 # Network Bandwidth Usage Monitoring and Threshold Alert System
 
 A full-stack network telemetry processing prototype demonstrating the application of **Formal Language Theory (Regular Expressions)** for structural record validation and **Automata Theory (Finite-State Machines)** for deterministic host classification and anomaly detection.
